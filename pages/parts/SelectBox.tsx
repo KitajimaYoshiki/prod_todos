@@ -25,7 +25,7 @@ export default function BasicSelect() {
           onChange={handleChange}
         >
           <MenuItem value="">
-            <em>なし</em>
+            <em>指定なし</em>
           </MenuItem>
           <MenuItem value={1}>重要</MenuItem>
           <MenuItem value={2}>優先</MenuItem>
