@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,21 +8,15 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { TodoItem } from '@pages/api/TodoItem';
+import { useState } from 'react';
 
 interface Data {
-  calories: number;
   name: string;
+  calories: number;
 }
 
 function createData(
@@ -36,21 +29,31 @@ function createData(
   };
 }
 
-const rows = [
-  createData('Cupcake', 305),
-  createData('Donut', 452),
-  createData('Eclair', 262),
-  createData('Frozen yoghurt', 159),
-  createData('Gingerbread', 356),
-  createData('Honeycomb', 408),
-  createData('Ice cream sandwich', 237),
-  createData('Jelly Bean', 375),
-  createData('KitKat', 518),
-  createData('Lollipop', 392),
-  createData('Marshmallow', 318),
-  createData('Nougat', 360),
-  createData('Oreo', 437),
-];
+export type ItemProps = {
+  title: string;
+  deadline: Date;
+}
+
+export type ItemListProps = {
+  todoList: TodoItem[],
+};
+
+// const rows = [
+//   createData('Cupcake', 305),
+//   createData('Donut', 452),
+//   createData('Eclair', 262),
+//   createData('Frozen yoghurt', 159),
+//   createData('Gingerbread', 356),
+//   createData('Honeycomb', 408),
+//   createData('Ice cream sandwich', 237),
+//   createData('Jelly Bean', 375),
+//   createData('KitKat', 518),
+//   createData('Lollipop', 392),
+//   createData('Marshmallow', 318),
+//   createData('Nougat', 360),
+//   createData('Oreo', 437),
+// ];
+
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -173,63 +176,25 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-// function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-//   const { numSelected } = props;
-
-//   return (
-//     <Toolbar
-//       sx={{
-//         pl: { sm: 2 },
-//         pr: { xs: 1, sm: 1 },
-//         ...(numSelected > 0 && {
-//           bgcolor: (theme) =>
-//             alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-//         }),
-//       }}
-//     >
-//       {numSelected > 0 ? (
-//         <Typography
-//           sx={{ flex: '1 1 100%' }}
-//           color="inherit"
-//           variant="subtitle1"
-//           component="div"
-//         >
-//           {numSelected} selected
-//         </Typography>
-//       ) : (
-//         <Typography
-//           sx={{ flex: '1 1 100%' }}
-//           variant="h6"
-//           id="tableTitle"
-//           component="div"
-//         >
-//           Nutrition
-//         </Typography>
-//       )}
-//       {numSelected > 0 ? (
-//         <Tooltip title="Delete">
-//           <IconButton>
-//             <DeleteIcon />
-//           </IconButton>
-//         </Tooltip>
-//       ) : (
-//         <Tooltip title="Filter list">
-//           <IconButton>
-//             <FilterListIcon />
-//           </IconButton>
-//         </Tooltip>
-//       )}
-//     </Toolbar>
-//   );
-// }
-
-export default function EnhancedTable() {
+export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  //
+  const rows = new Array();
+  let index = 0;
+  todoList.map(item => 
+    {
+      rows[index] = createData(item.content,item.id);
+      index++;
+    }
+  )
+  //
+  
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -375,3 +340,5 @@ export default function EnhancedTable() {
     </Box>
   );
 }
+
+export default EnhancedTable;
