@@ -13,25 +13,21 @@ import Checkbox from '@mui/material/Checkbox';
 import { visuallyHidden } from '@mui/utils';
 import { TodoItem } from '@pages/api/TodoItem';
 import { useState } from 'react';
+import DateFormat from './components/date'
 
 interface Data {
-  name: string;
-  calories: number;
+  title: string;
+  deadline: Date;
 }
 
 function createData(
-  name: string,
-  calories: number,
+  title: string,
+  deadline: Date,
 ): Data {
   return {
-    name,
-    calories,
+    title,
+    deadline,
   };
-}
-
-export type ItemProps = {
-  title: string;
-  deadline: Date;
 }
 
 export type ItemListProps = {
@@ -102,13 +98,13 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'name',
+    id: 'title',
     numeric: false,
     disablePadding: true,
     label: 'タイトル',
   },
   {
-    id: 'calories',
+    id: 'deadline',
     numeric: true,
     disablePadding: false,
     label: '期限日',
@@ -178,7 +174,7 @@ interface EnhancedTableToolbarProps {
 
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('deadline');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -189,7 +185,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   let index = 0;
   todoList.map(item => 
     {
-      rows[index] = createData(item.content,item.id);
+      rows[index] = createData(item.title,item.deadline);
       index++;
     }
   )
@@ -207,19 +203,19 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = rows.map((n) => n.title);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, title: string) => {
+    const selectedIndex = selected.indexOf(title);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, title);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -247,7 +243,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   //   setDense(event.target.checked);
   // };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (title: string) => selected.indexOf(title) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -277,17 +273,17 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.title);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.title)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.title}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -305,9 +301,11 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {row.title}
                       </TableCell>
-                      <TableCell align="center">{row.calories}</TableCell>
+                      <TableCell align="center">
+                        <DateFormat dateString={row.deadline} />
+                      </TableCell>
                     </TableRow>
                   );
                 })}
