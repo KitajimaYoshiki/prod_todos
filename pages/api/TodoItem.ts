@@ -1,5 +1,5 @@
 export type TodoItem = {
-  id: number;
-  title: string;
-  deadline: Date;
-};
+  id: number
+  title: string
+  deadline: Date
+}

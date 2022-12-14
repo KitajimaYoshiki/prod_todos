@@ -1,17 +1,17 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import FormHelperText from '@mui/material/FormHelperText';
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import FormHelperText from '@mui/material/FormHelperText'
 
 export default function BasicSelect() {
-  const [tags, setTags] = React.useState('');
+  const [tags, setTags] = React.useState('')
 
   const handleChange = (event: SelectChangeEvent) => {
-    setTags(event.target.value);
-  };
+    setTags(event.target.value)
+  }
 
   return (
     <div>
@@ -37,5 +37,5 @@ export default function BasicSelect() {
         <FormHelperText>表示するタスクのタグを選択</FormHelperText>
       </FormControl>
     </div>
-  );
+  )
 }

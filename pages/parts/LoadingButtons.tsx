@@ -1,17 +1,16 @@
-import * as React from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { useState } from "react";
+import * as React from 'react'
+import LoadingButton from '@mui/lab/LoadingButton'
+import { useState } from 'react'
 
 export default function LoadingButtons(props: any) {
-
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = React.useState(false);
+  const [count, setCount] = useState(0)
+  const [loading, setLoading] = React.useState(false)
 
   async function handleClick() {
-    setLoading(true);
-    setCount(count + 1);
-    await new Promise(resolve => setTimeout(resolve, props.time));
-    setLoading(false);
+    setLoading(true)
+    setCount(count + 1)
+    await new Promise((resolve) => setTimeout(resolve, props.time))
+    setLoading(false)
   }
 
   return (
@@ -21,7 +20,7 @@ export default function LoadingButtons(props: any) {
       loading={loading}
       loadingPosition="center"
       variant="contained"
-      sx={{margin: 3}}
+      sx={{ margin: 3 }}
     >
       ♥ {count}
     </LoadingButton>
