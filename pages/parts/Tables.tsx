@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper'
 import Checkbox from '@mui/material/Checkbox'
 import { visuallyHidden } from '@mui/utils'
 import { TodoItem } from '@pages/api/TodoItem'
-import { useState } from 'react'
 import DateFormat from './components/date'
 
 interface Data {
