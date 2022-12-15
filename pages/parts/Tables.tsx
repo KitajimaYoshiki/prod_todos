@@ -9,18 +9,21 @@ import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
-import { visuallyHidden } from '@mui/utils'
+import { Data } from '@pages/api/Data'
+import { Order } from '@pages/api/Order'
 import { TodoItem } from '@pages/api/TodoItem'
 import * as React from 'react'
 
 import DateFormat from './components/date'
+import EnhancedTableHead from './EnhancedTableHead'
 
-interface Data {
+const createData = ({
+  title,
+  deadline,
+}: {
   title: string
   deadline: Date
-}
-
-function createData(title: string, deadline: Date): Data {
+}): Data => {
   return {
     title,
     deadline,
@@ -31,23 +34,7 @@ export type ItemListProps = {
   todoList: TodoItem[]
 }
 
-// const rows = [
-//   createData('Cupcake', 305),
-//   createData('Donut', 452),
-//   createData('Eclair', 262),
-//   createData('Frozen yoghurt', 159),
-//   createData('Gingerbread', 356),
-//   createData('Honeycomb', 408),
-//   createData('Ice cream sandwich', 237),
-//   createData('Jelly Bean', 375),
-//   createData('KitKat', 518),
-//   createData('Lollipop', 392),
-//   createData('Marshmallow', 318),
-//   createData('Nougat', 360),
-//   createData('Oreo', 437),
-// ];
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+const descendingComparator = function <T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1
   }
@@ -57,9 +44,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0
 }
 
-type Order = 'asc' | 'desc'
-
-function getComparator<Key extends keyof any>(
+const getComparator = function <Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (a: { [key in Key]: string }, b: { [key in Key]: string }) => number {
@@ -70,7 +55,7 @@ function getComparator<Key extends keyof any>(
 
 // This method is created for cross-browser compatibility, if you don't
 // need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(
+const stableSort = function <T>(
   array: readonly T[],
   comparator: (a: T, b: T) => number
 ) {
@@ -85,98 +70,6 @@ function stableSort<T>(
   return stabilizedThis.map((el) => el[0])
 }
 
-interface HeadCell {
-  disablePadding: boolean
-  id: keyof Data
-  label: string
-  numeric: boolean
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'title',
-    numeric: false,
-    disablePadding: true,
-    label: 'タイトル',
-  },
-  {
-    id: 'deadline',
-    numeric: true,
-    disablePadding: false,
-    label: '期限日',
-  },
-]
-
-interface EnhancedTableProps {
-  numSelected: number
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
-  order: Order
-  orderBy: string
-  rowCount: number
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props
-  const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property)
-    }
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'center' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
-}
-
-interface EnhancedTableToolbarProps {
-  numSelected: number
-}
-
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('deadline')
@@ -189,7 +82,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const rows = new Array()
   let index = 0
   todoList.map((item) => {
-    rows[index] = createData(item.title, item.deadline)
+    rows[index] = createData({ title: item.title, deadline: item.deadline })
     index++
   })
   //

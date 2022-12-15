@@ -1,12 +1,12 @@
-import * as React from 'react'
 import LoadingButton from '@mui/lab/LoadingButton'
+import * as React from 'react'
 import { useState } from 'react'
 
-export default function LoadingButtons(props: any) {
+const LoadingButtons = (props: any) => {
   const [count, setCount] = useState(0)
   const [loading, setLoading] = React.useState(false)
 
-  async function handleClick() {
+  const handleClick = async () => {
     setLoading(true)
     setCount(count + 1)
     await new Promise((resolve) => setTimeout(resolve, props.time))
@@ -26,3 +26,5 @@ export default function LoadingButtons(props: any) {
     </LoadingButton>
   )
 }
+
+export default LoadingButtons

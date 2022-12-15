@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import * as React from 'react'
 
-export default function BasicSelect() {
+const BasicSelect = () => {
   const [tags, setTags] = React.useState('')
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -38,3 +38,5 @@ export default function BasicSelect() {
     </div>
   )
 }
+
+export default BasicSelect

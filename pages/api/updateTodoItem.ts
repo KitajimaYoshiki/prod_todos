@@ -7,13 +7,13 @@ const BACKEND_URL = (
 const API_TASKS = `${BACKEND_URL}/api/tasks`
 
 // Todoリストをbackendから取得するメソッドを返す
-export function loadTodoList(): Promise<TodoItem[]> {
+export const loadTodoList = (): Promise<TodoItem[]> => {
   // GET /api/tasks
   return Axios.get(API_TASKS).then((resp) => resp.data)
 }
 
 // Todoリストを更新するメソッドを返す
-export function updateTodoItem(items: TodoItem[], id: number): TodoItem[] {
+export const updateTodoItem = (items: TodoItem[], id: number): TodoItem[] => {
   const updated = [...items].map((item) => {
     if (item.id === id) {
       return { ...item }
