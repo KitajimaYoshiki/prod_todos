@@ -1,5 +1,6 @@
-import * as React from 'react'
 import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -8,10 +9,10 @@ import TableHead from '@mui/material/TableHead'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
-import Paper from '@mui/material/Paper'
-import Checkbox from '@mui/material/Checkbox'
 import { visuallyHidden } from '@mui/utils'
 import { TodoItem } from '@pages/api/TodoItem'
+import * as React from 'react'
+
 import DateFormat from './components/date'
 
 interface Data {
@@ -61,10 +62,7 @@ type Order = 'asc' | 'desc'
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+): (a: { [key in Key]: string }, b: { [key in Key]: string }) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)

@@ -1,9 +1,9 @@
-import * as React from 'react'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import FormHelperText from '@mui/material/FormHelperText'
+import * as React from 'react'
 
 export default function BasicSelect() {
   const [tags, setTags] = React.useState('')

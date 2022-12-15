@@ -1,5 +1,6 @@
-import Axios from 'axios'
 import { TodoItem } from '@pages/api/TodoItem'
+import Axios from 'axios'
+
 const BACKEND_URL = (
   process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/'
 ).replace(/\/$/, '')
