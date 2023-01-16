@@ -21,8 +21,8 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { TodoItem } from '@pages/api/TodoItem'
 import { loadTodoList } from '@pages/api/updateTodoItem'
-import * as React from 'react'
 import { useEffect, useState } from 'react'
+import { isReturnStatement } from 'typescript'
 
 import LoadingButtons from './LoadingButtons'
 import SelectBox from './SelectBox'
@@ -81,7 +81,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 const PersistentDrawerLeft = () => {
   const theme = useTheme()
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -92,18 +92,16 @@ const PersistentDrawerLeft = () => {
   }
 
   const [todoList, setTodoList] = useState<TodoItem[]>([])
+  const updateTodoList = async () => {
+    const items = await loadTodoList().catch((e) => {
+      console.log(`loadTodoList() failed - ${e}`)
+      return null
+    })
+    if (!items) return
+    setTodoList(items)
+  }
   useEffect(() => {
-    // useEffect は async-method を指定できないので then/catch で受ける
-    loadTodoList()
-      .then((items) => {
-        setTodoList(items)
-      })
-      .catch((e) => {
-        console.log(`loadTodoList() failed - ${e}`)
-      })
-    return () => {}
-    // Homeをロードしたときのみ実行するために depends を指定しない
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    updateTodoList()
   }, [])
 
   return (
