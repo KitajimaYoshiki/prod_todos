@@ -28,7 +28,31 @@ const headCells: readonly HeadCell[] = [
     id: 'deadline',
     numeric: true,
     disablePadding: false,
-    label: '期限日',
+    label: '期限',
+  },
+  {
+    id: 'checklist',
+    numeric: true,
+    disablePadding: false,
+    label: 'チェックリスト',
+  },
+  {
+    id: 'memo',
+    numeric: true,
+    disablePadding: false,
+    label: 'メモ',
+  },
+  {
+    id: 'start',
+    numeric: true,
+    disablePadding: false,
+    label: '開始日',
+  },
+  {
+    id: 'tag',
+    numeric: true,
+    disablePadding: false,
+    label: 'タグ',
   },
 ]
 

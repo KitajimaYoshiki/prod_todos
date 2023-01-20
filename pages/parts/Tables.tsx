@@ -18,13 +18,25 @@ import EnhancedTableHead from './EnhancedTableHead'
 const createData = ({
   title,
   deadline,
+  checklist,
+  memo,
+  start,
+  tag,
 }: {
   title: string
   deadline: Date
+  checklist: Array<string>
+  memo: string
+  start: Date
+  tag: Array<string>
 }): Data => {
   return {
     title,
     deadline,
+    checklist,
+    memo,
+    start,
+    tag,
   }
 }
 
@@ -80,7 +92,14 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const rows = new Array()
   let index = 0
   todoList.map((item) => {
-    rows[index] = createData({ title: item.title, deadline: item.deadline })
+    rows[index] = createData({
+      title: item.title,
+      deadline: item.deadline,
+      checklist: item.checklist,
+      memo: item.memo,
+      start: item.start,
+      tag: item.tag,
+    })
     index++
   })
   //

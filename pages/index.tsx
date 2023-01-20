@@ -1,11 +1,20 @@
+import Head from 'next/head'
 import React from 'react'
 
-import MenuBar from './parts/MenuBar'
+import Login from './login'
+import View from './view'
 
 const Home = () => {
+  const [menu, setMenu] = React.useState('')
   return (
     <div>
-      <MenuBar />
+      <Head>
+        <title>To-do App</title>
+      </Head>
+      <>
+        {menu == '' && <Login setMenu={setMenu} />}
+        {menu == 'view' && <View setMenu={setMenu} />}
+      </>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import LogoutIcon from '@mui/icons-material/Logout'
 import MenuIcon from '@mui/icons-material/Menu'
 import SettingsIcon from '@mui/icons-material/Settings'
-import { Container } from '@mui/material'
+import { Button, Container, Grid } from '@mui/material'
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -22,7 +22,6 @@ import Typography from '@mui/material/Typography'
 import { TodoItem } from '@pages/api/TodoItem'
 import { loadTodoList } from '@pages/api/updateTodoItem'
 import { useEffect, useState } from 'react'
-import { isReturnStatement } from 'typescript'
 
 import LoadingButtons from './LoadingButtons'
 import SelectBox from './SelectBox'
@@ -79,7 +78,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }))
 
-const PersistentDrawerLeft = () => {
+const PersistentDrawerLeft = (props: any) => {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
 
@@ -89,6 +88,12 @@ const PersistentDrawerLeft = () => {
 
   const handleDrawerClose = () => {
     setOpen(false)
+  }
+
+  const handleMenu = (index: number, name: string) => {
+    if (index === 0) {
+      props.setMenu(name)
+    }
   }
 
   const [todoList, setTodoList] = useState<TodoItem[]>([])
@@ -152,7 +157,7 @@ const PersistentDrawerLeft = () => {
         <List>
           {['Logout', 'Calendar', 'Setting'].map((text, index) => (
             <ListItem key={text} disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={() => handleMenu(index, '')}>
                 <ListItemIcon>
                   {index === 0 ? (
                     <LogoutIcon />
@@ -189,10 +194,18 @@ const PersistentDrawerLeft = () => {
                 // bgcolor: 'skyblue',
               }}
             >
-              <LoadingButtons time={1000} />
+              {/* <LoadingButtons time={1000} /> */}
+              <Button variant="contained">タスクを追加</Button>
               <SelectBox></SelectBox>
             </Box>
             <Tables todoList={todoList} />
+            <Box>
+              <Grid container alignItems="right" justifyContent="right">
+                <Button variant="contained" size="large">
+                  タスク完了
+                </Button>
+              </Grid>
+            </Box>
           </Box>
         </Container>
       </Main>
