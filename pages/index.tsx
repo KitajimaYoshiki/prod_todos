@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 
+import Create from './create'
 import Login from './login'
 import View from './view'
 
@@ -12,8 +13,9 @@ const Home = () => {
         <title>To-do App</title>
       </Head>
       <>
-        {menu == '' && <Login setMenu={setMenu} />}
-        {menu == 'view' && <View setMenu={setMenu} />}
+        {menu === '' && <Login setMenu={setMenu} />}
+        {menu === 'view' && <View setMenu={setMenu} />}
+        {menu === 'create' && <Create setMenu={setMenu} />}
       </>
     </div>
   )

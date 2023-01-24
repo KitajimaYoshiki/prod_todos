@@ -20,7 +20,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { TodoItem } from '@pages/api/TodoItem'
-import { loadTodoList } from '@pages/api/updateTodoItem'
+import { loadTodoList } from '@pages/api/todoItemDao'
 import { useEffect, useState } from 'react'
 
 import LoadingButtons from './LoadingButtons'

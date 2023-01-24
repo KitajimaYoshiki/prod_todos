@@ -2,7 +2,7 @@ import { TodoItem } from '@pages/api/TodoItem'
 import Axios from 'axios'
 
 const BACKEND_URL = (
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/'
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002/'
 ).replace(/\/$/, '')
 const API_TASKS = `${BACKEND_URL}/api/tasks`
 
