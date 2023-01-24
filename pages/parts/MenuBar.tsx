@@ -19,8 +19,9 @@ import ListItemText from '@mui/material/ListItemText'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import { tasks } from '@pages/api/dto/tasks'
 import { TodoItem } from '@pages/api/TodoItem'
-import { loadTodoList } from '@pages/api/todoItemDao'
+import { loadItems, loadTags, loadTodoList } from '@pages/api/todoItemDao'
 import { useEffect, useState } from 'react'
 
 import LoadingButtons from './LoadingButtons'
@@ -96,14 +97,16 @@ const PersistentDrawerLeft = (props: any) => {
     }
   }
 
-  const [todoList, setTodoList] = useState<TodoItem[]>([])
+  const [todoList, setTodoList] = useState<tasks[]>([])
   const updateTodoList = async () => {
-    const items = await loadTodoList().catch((e) => {
+    // Task
+    const task = await loadTodoList('test01', true).catch((e) => {
       console.log(`loadTodoList() failed - ${e}`)
       return null
     })
-    if (!items) return
-    setTodoList(items)
+    if (!task) return
+
+    setTodoList(task)
   }
   useEffect(() => {
     updateTodoList()

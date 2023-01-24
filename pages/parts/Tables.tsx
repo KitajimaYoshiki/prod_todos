@@ -8,8 +8,10 @@ import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { Data } from '@pages/api/Data'
+import { tasks } from '@pages/api/dto/tasks'
 import { Order } from '@pages/api/Order'
 import { TodoItem } from '@pages/api/TodoItem'
+import { loadItems, loadTags } from '@pages/api/todoItemDao'
 import * as React from 'react'
 
 import DateFormat from './components/date'
@@ -41,7 +43,7 @@ const createData = ({
 }
 
 export type ItemListProps = {
-  todoList: TodoItem[]
+  todoList: tasks[]
 }
 
 const descendingComparator = function <T>(a: T, b: T, orderBy: keyof T) {
@@ -80,6 +82,37 @@ const stableSort = function <T>(
   return stabilizedThis.map((el) => el[0])
 }
 
+// Load Tag and Items
+// const getInfo = async (item: tasks, show: boolean) => {
+//   // Tag
+//   let tags: any = await loadTags(1).catch((e) => {
+//     console.log(`loadTags() failed - ${e}`)
+//     return null
+//   })
+//   console.log(tags)
+
+//   // Item
+//   let items: any = await loadItems(1, show).catch((e) => {
+//     console.log(`loadItems() failed - ${e}`)
+//     return null
+//   })
+
+//   console.log(items)
+
+//   const task: TodoItem = {
+//     id: item.id,
+//     title: item.title,
+//     deadline: item.deadline,
+//     checklist: items,
+//     memo: item.memo,
+//     start: item.start,
+//     tag: tags,
+//     done: item.done,
+//   }
+
+//   return task
+// }
+
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('deadline')
@@ -88,6 +121,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
+  console.log(todoList)
   //
   const rows = new Array()
   let index = 0
@@ -103,6 +137,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
     index++
   })
   //
+  console.log(rows)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -220,6 +255,12 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                       <TableCell align="center">
                         <DateFormat dateString={row.deadline} />
                       </TableCell>
+                      <TableCell align="center">{row.checklist}</TableCell>
+                      <TableCell align="center">{row.memo}</TableCell>
+                      <TableCell align="center">
+                        <DateFormat dateString={row.start} />
+                      </TableCell>
+                      <TableCell align="center">{row.tag}</TableCell>
                     </TableRow>
                   )
                 })}
