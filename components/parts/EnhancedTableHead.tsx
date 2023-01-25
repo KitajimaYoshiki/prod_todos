@@ -7,8 +7,8 @@ import {
   TableSortLabel,
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
-import { Data } from '@pages/api/Data'
-import { Order } from '@pages/api/Order'
+import { Data } from 'components/api/Data'
+import { Order } from 'components/api/Order'
 
 interface HeadCell {
   disablePadding: boolean

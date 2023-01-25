@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import React from 'react'
 
-import Create from './create'
-import Login from './login'
-import View from './view'
+import Create from '../components/page/create'
+import Login from '../components/page/login'
+import View from '../components/page/view'
 
 const Home = () => {
   const [menu, setMenu] = React.useState('')

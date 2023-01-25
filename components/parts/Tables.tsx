@@ -7,14 +7,16 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
-import { Data } from '@pages/api/Data'
-import { tasks } from '@pages/api/dto/tasks'
-import { Order } from '@pages/api/Order'
-import { TodoItem } from '@pages/api/TodoItem'
-import { loadItems, loadTags } from '@pages/api/todoItemDao'
+import { Data } from 'components/api/Data'
+import { Order } from 'components/api/Order'
+import { TodoItem } from 'components/api/TodoItem'
+import { loadItems, loadTags } from 'components/api/todoItemDao'
+import { checkList } from 'components/dto/checkList'
+import { tag } from 'components/dto/tag'
+import { task } from 'components/dto/task'
 import * as React from 'react'
 
-import DateFormat from './components/date'
+import DateFormat from '../api/date'
 import EnhancedTableHead from './EnhancedTableHead'
 
 const createData = ({
@@ -27,10 +29,10 @@ const createData = ({
 }: {
   title: string
   deadline: Date
-  checklist: Array<string>
+  checklist: checkList[]
   memo: string
   start: Date
-  tag: Array<string>
+  tag: tag[]
 }): Data => {
   return {
     title,
@@ -43,7 +45,7 @@ const createData = ({
 }
 
 export type ItemListProps = {
-  todoList: tasks[]
+  todoList: task[]
 }
 
 const descendingComparator = function <T>(a: T, b: T, orderBy: keyof T) {
@@ -59,6 +61,7 @@ const descendingComparator = function <T>(a: T, b: T, orderBy: keyof T) {
 const getComparator = function <Key extends keyof any>(
   order: Order,
   orderBy: Key
+  // ここが影響で表示データがstringになっているが、変更の仕方がわからず。。。
 ): (a: { [key in Key]: string }, b: { [key in Key]: string }) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
@@ -83,35 +86,35 @@ const stableSort = function <T>(
 }
 
 // Load Tag and Items
-// const getInfo = async (item: tasks, show: boolean) => {
-//   // Tag
-//   let tags: any = await loadTags(1).catch((e) => {
-//     console.log(`loadTags() failed - ${e}`)
-//     return null
-//   })
-//   console.log(tags)
+const getInfo = async (item: task, show: boolean): Promise<TodoItem> => {
+  // Tag
+  let tags: any = await loadTags(item.id).catch((e) => {
+    console.log(`loadTags() failed - ${e}`)
+    return null
+  })
+  console.log(tags)
 
-//   // Item
-//   let items: any = await loadItems(1, show).catch((e) => {
-//     console.log(`loadItems() failed - ${e}`)
-//     return null
-//   })
+  // Item
+  let items: any = await loadItems(item.id, show).catch((e) => {
+    console.log(`loadItems() failed - ${e}`)
+    return null
+  })
 
-//   console.log(items)
+  console.log(items)
 
-//   const task: TodoItem = {
-//     id: item.id,
-//     title: item.title,
-//     deadline: item.deadline,
-//     checklist: items,
-//     memo: item.memo,
-//     start: item.start,
-//     tag: tags,
-//     done: item.done,
-//   }
+  const task: TodoItem = {
+    id: item.id,
+    title: item.title,
+    deadline: item.deadline,
+    checklist: items,
+    memo: item.memo,
+    start: item.start,
+    tag: tags,
+    done: item.done,
+  }
 
-//   return task
-// }
+  return task
+}
 
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc')
@@ -126,14 +129,15 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const rows = new Array()
   let index = 0
   todoList.map((item) => {
-    rows[index] = createData({
-      title: item.title,
-      deadline: item.deadline,
-      checklist: item.checklist,
-      memo: item.memo,
-      start: item.start,
-      tag: item.tag,
-    })
+    rows[index] = getInfo(item, true)
+    // rows[index] = createData({
+    //   title: item.title,
+    //   deadline: item.deadline,
+    //   checklist: item.checklist,
+    //   memo: item.memo,
+    //   start: item.start,
+    //   tag: item.tag,
+    // })
     index++
   })
   //
@@ -255,7 +259,10 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                       <TableCell align="center">
                         <DateFormat dateString={row.deadline} />
                       </TableCell>
-                      <TableCell align="center">{row.checklist}</TableCell>
+                      <TableCell align="center">
+                        {/* ここを配列に対応させたい */}
+                        <TableCell align="center">{row.checklist}</TableCell>
+                      </TableCell>
                       <TableCell align="center">{row.memo}</TableCell>
                       <TableCell align="center">
                         <DateFormat dateString={row.start} />

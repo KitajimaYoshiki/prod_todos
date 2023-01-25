@@ -2,7 +2,7 @@ import { Box, Button, Grid } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import React from 'react'
 
-import LoginBar from './parts/LoginBar'
+import LoginBar from '../parts/LoginBar'
 
 const Login = (props: any) => {
   const handle = (name: string) => {

@@ -1,5 +1,5 @@
-import { checkList } from './dto/checkList'
-import { tags } from './dto/tags'
+import { checkList } from '../dto/checkList'
+import { tag } from '../dto/tag'
 
 export type TodoItem = {
   id: number
@@ -7,7 +7,7 @@ export type TodoItem = {
   deadline: Date
   start: Date
   memo: string
-  checklist: checkList
-  tag: tags
+  checklist: checkList[]
+  tag: tag[]
   done: boolean
 }

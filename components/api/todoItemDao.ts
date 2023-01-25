@@ -1,17 +1,17 @@
 import { ContactSupportOutlined } from '@mui/icons-material'
-import { TodoItem } from '@pages/api/TodoItem'
 // eslint-disable-next-line import/no-duplicates
 import axios from 'axios'
 // eslint-disable-next-line import/no-duplicates
 import Axios, { AxiosInstance } from 'axios'
 
-import { checkList } from './dto/checkList'
-import { tags } from './dto/tags'
-import { tasks } from './dto/tasks'
+import { checkList } from '../dto/checkList'
+import { tag } from '../dto/tag'
+import { task } from '../dto/task'
+import { TodoItem } from './TodoItem'
 
 // APIのURL
 const BACKEND_URL = (
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3002/'
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3001/'
 ).replace(/\/$/, '')
 const API_TASKS = `${BACKEND_URL}/api/tasks`
 // リクエストヘッダ
@@ -27,7 +27,7 @@ const apiClient: AxiosInstance = axios.create({
 export const loadTodoList = async (
   user_id: string,
   show_completed: boolean
-): Promise<tasks> => {
+): Promise<task[]> => {
   // POST /api/tasks/all
   const task = await apiClient
     .post('/all', {
@@ -35,12 +35,11 @@ export const loadTodoList = async (
       show_completed: show_completed,
     })
     .then((resp) => resp.data)
-
   return task
 }
 
 // タグ取得
-export const loadTags = async (task_id: number): Promise<tags> => {
+export const loadTags = async (task_id: number): Promise<tag[]> => {
   // POST /api/tasks/get_tags
   const tags = await apiClient
     .post('/get_tags', {
@@ -55,7 +54,7 @@ export const loadTags = async (task_id: number): Promise<tags> => {
 export const loadItems = async (
   task_id: number,
   show_completed: boolean
-): Promise<checkList> => {
+): Promise<checkList[]> => {
   // POST /api/tasks/get_tags
   const items = await apiClient
     .post('/get_check', {

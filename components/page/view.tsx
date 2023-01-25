@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 
-import MenuBar from './parts/MenuBar'
+import MenuBar from '../parts/MenuBar'
 
 const View = (props: any) => {
   return (

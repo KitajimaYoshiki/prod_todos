@@ -1,7 +1,7 @@
 import { Box, Button, Grid, TextField } from '@mui/material'
 import React from 'react'
 
-import LoginBar from './parts/LoginBar'
+import LoginBar from '../parts/LoginBar'
 
 const Create = (props: any) => {
   const handle = (name: string) => {
