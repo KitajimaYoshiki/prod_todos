@@ -1,6 +1,6 @@
 import { Box, Button, Grid } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import React from 'react'
+import React, { useRef } from 'react'
 
 import LoginBar from '../parts/LoginBar'
 
@@ -8,6 +8,12 @@ const Login = (props: any) => {
   const handle = (name: string) => {
     props.setMenu(name)
   }
+
+  const handleChange = () => {
+    const ref = inputRef.current
+    console.log(ref)
+  }
+  const inputRef = useRef(null)
 
   return (
     <div>
@@ -27,7 +33,13 @@ const Login = (props: any) => {
             autoComplete="off"
           >
             <div>
-              <TextField required id="outlined-required" label="ID" />
+              <TextField
+                required
+                id="outlined-required"
+                label="ID"
+                inputRef={inputRef}
+                onChange={handleChange}
+              />
             </div>
           </Box>
         </Grid>

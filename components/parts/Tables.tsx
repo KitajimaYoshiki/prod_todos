@@ -15,105 +15,13 @@ import { checkList } from 'components/dto/checkList'
 import { tag } from 'components/dto/tag'
 import { task } from 'components/dto/task'
 import * as React from 'react'
+import { useState } from 'react'
 
 import DateFormat from '../api/date'
 import EnhancedTableHead from './EnhancedTableHead'
 
-const createData = ({
-  title,
-  deadline,
-  checklist,
-  memo,
-  start,
-  tag,
-}: {
-  title: string
-  deadline: Date
-  checklist: checkList[]
-  memo: string
-  start: Date
-  tag: tag[]
-}): Data => {
-  return {
-    title,
-    deadline,
-    checklist,
-    memo,
-    start,
-    tag,
-  }
-}
-
 export type ItemListProps = {
   todoList: task[]
-}
-
-const descendingComparator = function <T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
-  return 0
-}
-
-const getComparator = function <Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-  // ここが影響で表示データがstringになっているが、変更の仕方がわからず。。。
-): (a: { [key in Key]: string }, b: { [key in Key]: string }) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy)
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-const stableSort = function <T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number])
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0])
-    if (order !== 0) {
-      return order
-    }
-    return a[1] - b[1]
-  })
-  return stabilizedThis.map((el) => el[0])
-}
-
-// Load Tag and Items
-const getInfo = async (item: task, show: boolean): Promise<TodoItem> => {
-  // Tag
-  let tags: any = await loadTags(item.id).catch((e) => {
-    console.log(`loadTags() failed - ${e}`)
-    return null
-  })
-  console.log(tags)
-
-  // Item
-  let items: any = await loadItems(item.id, show).catch((e) => {
-    console.log(`loadItems() failed - ${e}`)
-    return null
-  })
-
-  console.log(items)
-
-  const task: TodoItem = {
-    id: item.id,
-    title: item.title,
-    deadline: item.deadline,
-    checklist: items,
-    memo: item.memo,
-    start: item.start,
-    tag: tags,
-    done: item.done,
-  }
-
-  return task
 }
 
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
@@ -123,24 +31,50 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
+  const [tagList, setTagList] = useState<tag[]>([])
+  const [itemList, setItemList] = useState<checkList[]>([])
+  //
+  const rows = todoList
+    ? todoList.map((item) => ({
+        title: item.title,
+        deadline: item.deadline,
+        checklist: [],
+        memo: item.memo,
+        start: item.start,
+        tag: [],
+      }))
+    : []
 
-  console.log(todoList)
-  //
-  const rows = new Array()
-  let index = 0
-  todoList.map((item) => {
-    rows[index] = getInfo(item, true)
-    // rows[index] = createData({
-    //   title: item.title,
-    //   deadline: item.deadline,
-    //   checklist: item.checklist,
-    //   memo: item.memo,
-    //   start: item.start,
-    //   tag: item.tag,
-    // })
-    index++
-  })
-  //
+  // let getRows = new Array<Data>()
+  // let rows = new Array<Data>()
+  // let index: number = 0
+  // todoList.map(async (item) => {
+  //   // Tag
+  //   let tags: any = await loadTags(item.id).catch((e) => {
+  //     console.log(`loadTags() failed - ${e}`)
+  //     tags = null
+  //   })
+  //   setTagList(tags)
+
+  //   // Item
+  //   let items: any = await loadItems(item.id, true).catch((e) => {
+  //     console.log(`loadItems() failed - ${e}`)
+  //     items = null
+  //   })
+  //   setItemList(items)
+  //   rows[index] = {
+  //     id: item.id,
+  //     title: item.title,
+  //     deadline: item.deadline,
+  //     checklist: itemList,
+  //     memo: item.memo,
+  //     start: item.start,
+  //     tag: tagList,
+  //   }
+  //   index++
+  // })
+
+  // const rows = getRows.filter((v) => !!v)
   console.log(rows)
 
   const handleRequestSort = (
@@ -180,32 +114,11 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
 
     setSelected(newSelected)
   }
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
-  // const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDense(event.target.checked);
-  // };
-
   const isSelected = (title: string) => selected.indexOf(title) !== -1
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -221,82 +134,64 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
               rowCount={rows.length}
             />
             <TableBody>
-              {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-              rows.sort(getComparator(order, orderBy)).slice() */}
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.title)
-                  const labelId = `enhanced-table-checkbox-${index}`
+              {rows.map((row, index) => {
+                const isItemSelected = isSelected(row.title)
+                const labelId = `enhanced-table-checkbox-${index}`
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.title)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.title}
-                      selected={isItemSelected}
+                return (
+                  <TableRow
+                    hover
+                    onClick={(event) => handleClick(event, row.title)}
+                    role="checkbox"
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.title}
+                    selected={isItemSelected}
+                  >
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        color="primary"
+                        checked={isItemSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      component="th"
+                      id={labelId}
+                      scope="row"
+                      padding="none"
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.title}
-                      </TableCell>
+                      {row.title}
+                    </TableCell>
+                    <TableCell align="center">
+                      <DateFormat dateString={row.deadline} />
+                    </TableCell>
+                    <TableCell align="center">
                       <TableCell align="center">
-                        <DateFormat dateString={row.deadline} />
+                        {row.checklist.map((item) => {
+                          return <li key={item.id}>{item.name}</li>
+                        })}
                       </TableCell>
-                      <TableCell align="center">
-                        {/* ここを配列に対応させたい */}
-                        <TableCell align="center">{row.checklist}</TableCell>
-                      </TableCell>
-                      <TableCell align="center">{row.memo}</TableCell>
-                      <TableCell align="center">
-                        <DateFormat dateString={row.start} />
-                      </TableCell>
-                      <TableCell align="center">{row.tag}</TableCell>
-                    </TableRow>
-                  )
-                })}
-              {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (dense ? 33 : 53) * emptyRows,
-                  }}
-                >
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
+                    </TableCell>
+                    <TableCell align="center">{row.memo}</TableCell>
+                    <TableCell align="center">
+                      <DateFormat dateString={row.start} />
+                    </TableCell>
+                    <TableCell align="center">
+                      {row.tag != null &&
+                        row.tag.map((tag) => {
+                          return <li key={tag.id}>{tag.name}</li>
+                        })}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
     </Box>
   )
 }

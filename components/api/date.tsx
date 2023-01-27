@@ -3,7 +3,7 @@ import ja from 'date-fns/locale/ja'
 
 const DateFormat = (props: any) => {
   if (!props.dateString) {
-    return null
+    return <></>
   }
   const date = parseISO(props.dateString)
   //const date = parse(props.dateString, 'yoModo(E) Ho', new Date())
