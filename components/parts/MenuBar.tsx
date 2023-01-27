@@ -1,3 +1,4 @@
+import { TaskSharp } from '@mui/icons-material'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -19,8 +20,12 @@ import ListItemText from '@mui/material/ListItemText'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { loadTodoList } from 'components/api/todoItemDao'
+import { Data } from 'components/api/Data'
+import { loadItems, loadTags, loadTodoList } from 'components/api/todoItemDao'
+import { checkList } from 'components/dto/checkList'
+import { tag } from 'components/dto/tag'
 import { task } from 'components/dto/task'
+import { TodoList } from 'components/dto/TodoList'
 import { useEffect, useState } from 'react'
 
 import LoadingButtons from './LoadingButtons'
@@ -96,16 +101,28 @@ const PersistentDrawerLeft = (props: any) => {
     }
   }
 
-  const [todoList, setTodoList] = useState<task[]>([])
+  const [todoList, setTodoList] = useState<TodoList[]>([])
   const updateTodoList = async () => {
     // Task
-    const task = await loadTodoList('test01', true).catch((e) => {
+    const tasks = await loadTodoList('test01', true).catch((e) => {
       console.log(`loadTodoList() failed - ${e}`)
       return null
     })
-    if (!task) return
-
-    setTodoList(task)
+    if (!tasks) return
+    const taskList: TodoList[] = []
+    for (const task of tasks) {
+      // Tag
+      const tags = await loadTags(task.id).catch((e) => {
+        console.log(`loadTags() failed - ${e}`)
+        return []
+      })
+      const items = await loadItems(task.id, true).catch((e) => {
+        console.log(`loadItems() failed - ${e}`)
+        return []
+      })
+      taskList.push({ ...task, tags, items })
+    }
+    setTodoList(taskList)
   }
   useEffect(() => {
     updateTodoList()

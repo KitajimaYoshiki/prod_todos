@@ -1,3 +1,4 @@
+import { Task } from '@mui/icons-material'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import Paper from '@mui/material/Paper'
@@ -14,6 +15,7 @@ import { loadItems, loadTags } from 'components/api/todoItemDao'
 import { checkList } from 'components/dto/checkList'
 import { tag } from 'components/dto/tag'
 import { task } from 'components/dto/task'
+import { TodoList } from 'components/dto/TodoList'
 import * as React from 'react'
 import { useState } from 'react'
 
@@ -21,7 +23,7 @@ import DateFormat from '../api/date'
 import EnhancedTableHead from './EnhancedTableHead'
 
 export type ItemListProps = {
-  todoList: task[]
+  todoList: TodoList[]
 }
 
 export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
@@ -31,48 +33,19 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
-  const [tagList, setTagList] = useState<tag[]>([])
-  const [itemList, setItemList] = useState<checkList[]>([])
-  //
+
+  console.log(todoList)
   const rows = todoList
     ? todoList.map((item) => ({
+        id: item.id,
         title: item.title,
         deadline: item.deadline,
-        checklist: [],
+        checklist: item.items,
         memo: item.memo,
         start: item.start,
-        tag: [],
+        tag: item.tags,
       }))
     : []
-
-  // let getRows = new Array<Data>()
-  // let rows = new Array<Data>()
-  // let index: number = 0
-  // todoList.map(async (item) => {
-  //   // Tag
-  //   let tags: any = await loadTags(item.id).catch((e) => {
-  //     console.log(`loadTags() failed - ${e}`)
-  //     tags = null
-  //   })
-  //   setTagList(tags)
-
-  //   // Item
-  //   let items: any = await loadItems(item.id, true).catch((e) => {
-  //     console.log(`loadItems() failed - ${e}`)
-  //     items = null
-  //   })
-  //   setItemList(items)
-  //   rows[index] = {
-  //     id: item.id,
-  //     title: item.title,
-  //     deadline: item.deadline,
-  //     checklist: itemList,
-  //     memo: item.memo,
-  //     start: item.start,
-  //     tag: tagList,
-  //   }
-  //   index++
-  // })
 
   // const rows = getRows.filter((v) => !!v)
   console.log(rows)
@@ -170,9 +143,10 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                     </TableCell>
                     <TableCell align="center">
                       <TableCell align="center">
-                        {row.checklist.map((item) => {
-                          return <li key={item.id}>{item.name}</li>
-                        })}
+                        {!!row.checklist &&
+                          row.checklist.map((item) => {
+                            return <li key={item.id}>{item.name}</li>
+                          })}
                       </TableCell>
                     </TableCell>
                     <TableCell align="center">{row.memo}</TableCell>
