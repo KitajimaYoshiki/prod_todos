@@ -1,6 +1,6 @@
 import { Box, Button, Grid } from '@mui/material'
 import TextField from '@mui/material/TextField'
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 
 import LoginBar from '../parts/LoginBar'
 
@@ -9,11 +9,11 @@ const Login = (props: any) => {
     props.setMenu(name)
   }
 
-  const handleChange = () => {
-    const ref = inputRef.current
-    console.log(ref)
-  }
   const inputRef = useRef(null)
+  const [id, setId] = useState('')
+  const [password, setPassword] = useState('')
+
+  console.log(id)
 
   return (
     <div>
@@ -38,12 +38,13 @@ const Login = (props: any) => {
                 id="outlined-required"
                 label="ID"
                 inputRef={inputRef}
-                onChange={handleChange}
+                onChange={(event) => setId(event.target.value)}
+                value={id}
               />
             </div>
           </Box>
         </Grid>
-        <Grid container alignItems="center" justifyContent="center">
+        <Grid item container alignItems="center" justifyContent="center">
           <Box
             component="form"
             sx={{
@@ -59,11 +60,13 @@ const Login = (props: any) => {
                 label="Password"
                 type="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
               />
             </div>
           </Box>
         </Grid>
-        <Grid container alignItems="center" justifyContent="center">
+        <Grid item container alignItems="center" justifyContent="center">
           <Box
             sx={{
               margin: 2,

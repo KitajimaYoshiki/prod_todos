@@ -34,21 +34,8 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [dense, setDense] = React.useState(false)
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
+  // const todoList = getRows.filter((v) => !!v)
   console.log(todoList)
-  const rows = todoList
-    ? todoList.map((item) => ({
-        id: item.id,
-        title: item.title,
-        deadline: item.deadline,
-        checklist: item.items,
-        memo: item.memo,
-        start: item.start,
-        tag: item.tags,
-      }))
-    : []
-
-  // const rows = getRows.filter((v) => !!v)
-  console.log(rows)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -61,7 +48,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.title)
+      const newSelected = todoList.map((n) => n.title)
       setSelected(newSelected)
       return
     }
@@ -104,10 +91,10 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={todoList.length}
             />
             <TableBody>
-              {rows.map((row, index) => {
+              {todoList.map((row, index) => {
                 const isItemSelected = isSelected(row.title)
                 const labelId = `enhanced-table-checkbox-${index}`
 
@@ -118,7 +105,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.title}
+                    key={row.id}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
@@ -141,21 +128,19 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                     <TableCell align="center">
                       <DateFormat dateString={row.deadline} />
                     </TableCell>
-                    <TableCell align="center">
-                      <TableCell align="center">
-                        {!!row.checklist &&
-                          row.checklist.map((item) => {
-                            return <li key={item.id}>{item.name}</li>
-                          })}
-                      </TableCell>
+                    <TableCell align="left">
+                      {!!row.items &&
+                        row.items.map((item) => {
+                          return <li key={item.id}>{item.name}</li>
+                        })}
                     </TableCell>
                     <TableCell align="center">{row.memo}</TableCell>
                     <TableCell align="center">
                       <DateFormat dateString={row.start} />
                     </TableCell>
-                    <TableCell align="center">
-                      {row.tag != null &&
-                        row.tag.map((tag) => {
+                    <TableCell align="left">
+                      {!!row.tags &&
+                        row.tags.map((tag) => {
                           return <li key={tag.id}>{tag.name}</li>
                         })}
                     </TableCell>
