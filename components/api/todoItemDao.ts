@@ -1,8 +1,10 @@
 import { ContactSupportOutlined } from '@mui/icons-material'
 // eslint-disable-next-line import/no-duplicates
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 // eslint-disable-next-line import/no-duplicates
 import Axios, { AxiosInstance } from 'axios'
+import { user } from 'components/dto/user'
+import { use, useState } from 'react'
 
 import { checkList } from '../dto/checkList'
 import { tag } from '../dto/tag'
@@ -64,6 +66,40 @@ export const loadItems = async (
     .then((resp) => resp.data)
 
   return items
+}
+
+// ログイン認証
+export const login = async (user: user) => {
+  try {
+    const result = await apiClient
+      .post('/login', {
+        user: user,
+      })
+      .then((resp) => resp.status)
+
+    return result
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    }
+  }
+}
+
+// アカウント作成
+export const createUser = async (user: user) => {
+  try {
+    const result = await apiClient
+      .post('/create_user', {
+        user: user,
+      })
+      .then((resp) => resp.status)
+
+    return result
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    }
+  }
 }
 
 // Todoリストを更新するメソッドを返す

@@ -104,7 +104,7 @@ const PersistentDrawerLeft = (props: any) => {
   const [todoList, setTodoList] = useState<TodoList[]>([])
   const updateTodoList = async () => {
     // Task
-    const tasks = await loadTodoList('test01', true).catch((e) => {
+    const tasks = await loadTodoList(props.userId, true).catch((e) => {
       console.log(`loadTodoList() failed - ${e}`)
       return null
     })

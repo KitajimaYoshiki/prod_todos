@@ -1,19 +1,85 @@
 import { Box, Button, Grid } from '@mui/material'
 import TextField from '@mui/material/TextField'
+import { login } from 'components/api/todoItemDao'
+import { user } from 'components/dto/user'
 import React, { useRef, useState } from 'react'
 
 import LoginBar from '../parts/LoginBar'
 
 const Login = (props: any) => {
+  const [id, setId] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const [idError, setIdError] = useState(false)
+  const [idRequired, setIdRequired] = useState(true)
+  const [passError, setPassError] = useState(false)
+  const [passRequired, setPassRequired] = useState(true)
+
+  // 画面遷移
   const handle = (name: string) => {
     props.setMenu(name)
   }
 
-  const inputRef = useRef(null)
-  const [id, setId] = useState('')
-  const [password, setPassword] = useState('')
+  // all error status 'false'
+  const changeFalse = () => {
+    setIdError(false)
+    setPassError(false)
+    return
+  }
 
-  console.log(id)
+  // all error status 'true'
+  const changeTrue = () => {
+    setIdError(true)
+    setPassError(true)
+    return
+  }
+
+  // 入力値チェック
+  const checkValue = (): boolean => {
+    if (!id || !password) {
+      alert('ID、Passwordを入力してください。')
+      if (!id) {
+        setIdError(true)
+      } else {
+        setIdError(false)
+      }
+      if (!password) {
+        setPassError(true)
+      } else {
+        setPassError(false)
+      }
+      return false
+    }
+
+    changeFalse()
+    return true
+  }
+
+  // ログイン認証
+  const authentication = async () => {
+    // 入力値チェック
+    const valueFlag: boolean = checkValue()
+    if (!valueFlag) {
+      return
+    }
+
+    // 認証
+    const userInfo: user = {
+      id: id,
+      password: password,
+    }
+    const resultCode = await login(userInfo)
+    // 認証チェック
+    if (resultCode == 401 || resultCode == 400) {
+      alert('IdまたはPassが正しくありません')
+      changeTrue()
+    } else if (resultCode == 200) {
+      // 画面遷移
+      handle('view')
+      props.setUserId(id)
+    }
+
+    return
+  }
 
   return (
     <div>
@@ -34,10 +100,11 @@ const Login = (props: any) => {
           >
             <div>
               <TextField
-                required
+                required={idRequired}
+                inputProps={{ maxLength: 25 }}
+                error={idError}
                 id="outlined-required"
                 label="ID"
-                inputRef={inputRef}
                 onChange={(event) => setId(event.target.value)}
                 value={id}
               />
@@ -55,11 +122,12 @@ const Login = (props: any) => {
           >
             <div>
               <TextField
-                required
+                required={passRequired}
+                error={passError}
+                inputProps={{ maxLength: 16 }}
                 id="outlined-password-input"
                 label="Password"
                 type="password"
-                autoComplete="current-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
@@ -73,7 +141,7 @@ const Login = (props: any) => {
               padding: 1,
             }}
           >
-            <Button variant="contained" onClick={() => handle('view')}>
+            <Button variant="contained" onClick={() => authentication()}>
               ログイン
             </Button>
           </Box>
