@@ -29,43 +29,58 @@ const apiClient: AxiosInstance = axios.create({
 export const loadTodoList = async (
   user_id: string,
   show_completed: boolean
-): Promise<task[]> => {
-  // POST /api/tasks/all
-  const task = await apiClient
-    .post('/all', {
-      user_id: user_id,
-      show_completed: show_completed,
-    })
-    .then((resp) => resp.data)
-  return task
+) => {
+  try {
+    // POST /api/tasks/all
+    const task = await apiClient
+      .post('/all', {
+        user_id: user_id,
+        show_completed: show_completed,
+      })
+      .then((resp) => resp.data)
+    return task
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    }
+  }
 }
 
 // タグ取得
-export const loadTags = async (task_id: number): Promise<tag[]> => {
-  // POST /api/tasks/get_tags
-  const tags = await apiClient
-    .post('/get_tags', {
-      task_id: task_id,
-    })
-    .then((resp) => resp.data)
+export const loadTags = async (task_id: number) => {
+  try {
+    // POST /api/tasks/get_tags
+    const tags = await apiClient
+      .post('/get_tags', {
+        task_id: task_id,
+      })
+      .then((resp) => resp.data)
 
-  return tags
+    return tags
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    }
+  }
 }
 
 // チェックリスト取得
-export const loadItems = async (
-  task_id: number,
-  show_completed: boolean
-): Promise<checkList[]> => {
-  // POST /api/tasks/get_tags
-  const items = await apiClient
-    .post('/get_check', {
-      task_id: task_id,
-      show_completed: show_completed,
-    })
-    .then((resp) => resp.data)
+export const loadItems = async (task_id: number, show_completed: boolean) => {
+  try {
+    // POST /api/tasks/get_tags
+    const items = await apiClient
+      .post('/get_check', {
+        task_id: task_id,
+        show_completed: show_completed,
+      })
+      .then((resp) => resp.data)
 
-  return items
+    return items
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    }
+  }
 }
 
 // ログイン認証
@@ -100,16 +115,4 @@ export const createUser = async (user: user) => {
       return e.response.status
     }
   }
-}
-
-// Todoリストを更新するメソッドを返す
-export const updateTodoItem = (items: TodoItem[], id: number): TodoItem[] => {
-  const updated = [...items].map((item) => {
-    if (item.id === id) {
-      return { ...item }
-    } else return item
-  })
-  return updated
-  // ToDo: backendを要素を更新する.
-  // PATCH /api/tasks/:id
 }

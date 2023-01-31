@@ -109,6 +109,11 @@ const PersistentDrawerLeft = (props: any) => {
       return null
     })
     if (!tasks) return
+    // error
+    if (typeof tasks == 'number') {
+      alert('データベースに接続できませんでした。')
+      return
+    }
     const taskList: TodoList[] = []
     for (const task of tasks) {
       // Tag
@@ -116,10 +121,16 @@ const PersistentDrawerLeft = (props: any) => {
         console.log(`loadTags() failed - ${e}`)
         return []
       })
+      // item
       const items = await loadItems(task.id, true).catch((e) => {
         console.log(`loadItems() failed - ${e}`)
         return []
       })
+      // error
+      if (typeof tags == 'number' || typeof items == 'number') {
+        alert('データベースに接続できませんでした。')
+        return
+      }
       taskList.push({ ...task, tags, items })
     }
     setTodoList(taskList)

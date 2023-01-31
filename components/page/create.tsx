@@ -93,6 +93,7 @@ const Create = (props: any) => {
       alert('データベースに接続できませんでした。')
       changeTrue()
     } else if (resultCode == 201) {
+      alert('登録成功')
       // 画面遷移
       handle('')
     }
@@ -121,6 +122,7 @@ const Create = (props: any) => {
               <TextField
                 required={idRequired}
                 error={idError}
+                inputProps={{ maxLength: 25, pattern: '/^[a-zA-Z0-9]*$/' }}
                 id="outlined-required"
                 label="ID"
                 value={id}
@@ -142,6 +144,7 @@ const Create = (props: any) => {
               <TextField
                 required={passRequired}
                 error={passError}
+                inputProps={{ maxLength: 16 }}
                 id="outlined-password-input"
                 label="Password"
                 type="password"
@@ -164,6 +167,7 @@ const Create = (props: any) => {
               <TextField
                 required={confirmRequired}
                 error={confirmError}
+                inputProps={{ maxLength: 16 }}
                 id="outlined-password-reinput"
                 label="Password（確認）"
                 type="password"
