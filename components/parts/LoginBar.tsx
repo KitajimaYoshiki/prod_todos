@@ -1,4 +1,3 @@
-import { PropaneSharp } from '@mui/icons-material'
 import { Grid } from '@mui/material'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'

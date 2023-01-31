@@ -60,6 +60,32 @@ const Create = (props: any) => {
       return false
     }
 
+    // 字種チェック
+    const idType = id.match(/^[a-zA-Z0-9]*$/)
+    const passType = password.match(/^[a-zA-Z0-9]*$/)
+    const confirmType = confirm.match(/^[a-zA-Z0-9]*$/)
+    if (!idType || !passType || !confirmType) {
+      alert(
+        '利用できない文字が含まれています。\n半角英数字のみを入力してください。'
+      )
+      if (!idType) {
+        setIdError(true)
+      } else {
+        setIdError(false)
+      }
+      if (!passType) {
+        setPassError(true)
+      } else {
+        setPassError(false)
+      }
+      if (!confirmType) {
+        setConfirmError(true)
+      } else {
+        setConfirmError(false)
+      }
+      return false
+    }
+
     // passwordとconfirmの文字列比較
     if (password !== confirm) {
       alert('Passwordと確認が一致しません。')
@@ -89,13 +115,13 @@ const Create = (props: any) => {
     if (resultCode == 400) {
       alert('このIDはすでに利用されています。')
       changeTrue()
-    } else if (resultCode == 500) {
-      alert('データベースに接続できませんでした。')
-      changeTrue()
     } else if (resultCode == 201) {
       alert('登録成功')
       // 画面遷移
       handle('')
+    } else {
+      alert('データベースに接続できませんでした。')
+      changeTrue()
     }
 
     return
@@ -122,7 +148,7 @@ const Create = (props: any) => {
               <TextField
                 required={idRequired}
                 error={idError}
-                inputProps={{ maxLength: 25, pattern: '/^[a-zA-Z0-9]*$/' }}
+                inputProps={{ maxLength: 25 }}
                 id="outlined-required"
                 label="ID"
                 value={id}

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-} from '@mui/material'
-import { visuallyHidden } from '@mui/utils'
+import { Checkbox, TableCell, TableHead, TableRow } from '@mui/material'
 import { Data } from 'components/api/Data'
 import { Order } from 'components/api/Order'
 
@@ -69,18 +61,7 @@ interface EnhancedTableProps {
 }
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
-  const {
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props
-  const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property)
-    }
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props
 
   return (
     <TableHead>
@@ -103,18 +84,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.label}
           </TableCell>
         ))}
       </TableRow>

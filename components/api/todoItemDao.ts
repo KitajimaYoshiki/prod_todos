@@ -1,15 +1,5 @@
-import { ContactSupportOutlined } from '@mui/icons-material'
-// eslint-disable-next-line import/no-duplicates
-import axios, { AxiosError } from 'axios'
-// eslint-disable-next-line import/no-duplicates
-import Axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { user } from 'components/dto/user'
-import { use, useState } from 'react'
-
-import { checkList } from '../dto/checkList'
-import { tag } from '../dto/tag'
-import { task } from '../dto/task'
-import { TodoItem } from './TodoItem'
 
 // APIのURL
 const BACKEND_URL = (
@@ -40,8 +30,10 @@ export const loadTodoList = async (
       .then((resp) => resp.data)
     return task
   } catch (e) {
-    if (axios.isAxiosError(e) && e.response) {
+    if (axios.isAxiosError(e) && e.response && e.response.status) {
       return e.response.status
+    } else {
+      return -1
     }
   }
 }
@@ -58,8 +50,10 @@ export const loadTags = async (task_id: number) => {
 
     return tags
   } catch (e) {
-    if (axios.isAxiosError(e) && e.response) {
+    if (axios.isAxiosError(e) && e.response && e.response.status) {
       return e.response.status
+    } else {
+      return -1
     }
   }
 }
@@ -77,8 +71,10 @@ export const loadItems = async (task_id: number, show_completed: boolean) => {
 
     return items
   } catch (e) {
-    if (axios.isAxiosError(e) && e.response) {
+    if (axios.isAxiosError(e) && e.response && e.response.status) {
       return e.response.status
+    } else {
+      return -1
     }
   }
 }

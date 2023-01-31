@@ -1,4 +1,3 @@
-import { TaskSharp } from '@mui/icons-material'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'
@@ -20,15 +19,10 @@ import ListItemText from '@mui/material/ListItemText'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { Data } from 'components/api/Data'
 import { loadItems, loadTags, loadTodoList } from 'components/api/todoItemDao'
-import { checkList } from 'components/dto/checkList'
-import { tag } from 'components/dto/tag'
-import { task } from 'components/dto/task'
 import { TodoList } from 'components/dto/TodoList'
 import { useEffect, useState } from 'react'
 
-import LoadingButtons from './LoadingButtons'
 import SelectBox from './SelectBox'
 import Tables from './Tables'
 
@@ -108,9 +102,8 @@ const PersistentDrawerLeft = (props: any) => {
       console.log(`loadTodoList() failed - ${e}`)
       return null
     })
-    if (!tasks) return
     // error
-    if (typeof tasks == 'number') {
+    if (tasks == -1) {
       alert('データベースに接続できませんでした。')
       return
     }
@@ -127,7 +120,7 @@ const PersistentDrawerLeft = (props: any) => {
         return []
       })
       // error
-      if (typeof tags == 'number' || typeof items == 'number') {
+      if (tags == -1 || items == -1) {
         alert('データベースに接続できませんでした。')
         return
       }

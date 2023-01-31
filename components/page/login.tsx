@@ -2,7 +2,7 @@ import { Box, Button, Grid } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import { login } from 'components/api/todoItemDao'
 import { user } from 'components/dto/user'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 
 import LoginBar from '../parts/LoginBar'
 
@@ -74,8 +74,12 @@ const Login = (props: any) => {
       changeTrue()
     } else if (resultCode == 200) {
       // 画面遷移
+      alert('a')
       handle('view')
       props.setUserId(id)
+    } else {
+      alert('データベースに接続できませんでした。')
+      changeTrue()
     }
 
     return

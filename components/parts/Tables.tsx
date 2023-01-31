@@ -1,4 +1,3 @@
-import { Task } from '@mui/icons-material'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import Paper from '@mui/material/Paper'
@@ -6,18 +5,11 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
-import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { Data } from 'components/api/Data'
 import { Order } from 'components/api/Order'
-import { TodoItem } from 'components/api/TodoItem'
-import { loadItems, loadTags } from 'components/api/todoItemDao'
-import { checkList } from 'components/dto/checkList'
-import { tag } from 'components/dto/tag'
-import { task } from 'components/dto/task'
 import { TodoList } from 'components/dto/TodoList'
 import * as React from 'react'
-import { useState } from 'react'
 
 import DateFormat from '../api/date'
 import EnhancedTableHead from './EnhancedTableHead'
@@ -30,9 +22,7 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('deadline')
   const [selected, setSelected] = React.useState<readonly string[]>([])
-  const [page, setPage] = React.useState(0)
   const [dense, setDense] = React.useState(false)
-  const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
   // const todoList = getRows.filter((v) => !!v)
   console.log(todoList)
@@ -131,7 +121,12 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                     <TableCell align="left">
                       {!!row.items &&
                         row.items.map((item) => {
-                          return <li key={item.id}>{item.name}</li>
+                          return (
+                            <div key={item.id}>
+                              <Checkbox color="primary" />
+                              <span>{item.name}</span>
+                            </div>
+                          )
                         })}
                     </TableCell>
                     <TableCell align="center">{row.memo}</TableCell>
