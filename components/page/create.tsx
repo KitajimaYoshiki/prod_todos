@@ -15,6 +15,7 @@ const Create = (props: any) => {
   const [passRequired, setPassRequired] = useState(true)
   const [confirmError, setConfirmError] = useState(false)
   const [confirmRequired, setConfirmRequired] = useState(true)
+  const [buttonAble, setButtonAble] = useState(true)
 
   // 画面遷移
   const handle = (name: string) => {
@@ -86,13 +87,6 @@ const Create = (props: any) => {
       return false
     }
 
-    // passwordとconfirmの文字列比較
-    if (password !== confirm) {
-      alert('Passwordと確認が一致しません。')
-      changeTrue()
-      return false
-    }
-
     changeFalse()
     return true
   }
@@ -125,6 +119,26 @@ const Create = (props: any) => {
     }
 
     return
+  }
+
+  // set Password
+  const handleChangePassword = (inPassword: string) => {
+    setPassword(inPassword)
+    if (inPassword === confirm && confirm !== '') {
+      setButtonAble(false)
+    } else {
+      setButtonAble(true)
+    }
+  }
+
+  // set confirm
+  const handleChangeConfirm = (inConfirm: string) => {
+    setConfirm(inConfirm)
+    if (inConfirm === password && password !== '') {
+      setButtonAble(false)
+    } else {
+      setButtonAble(true)
+    }
   }
 
   return (
@@ -175,7 +189,7 @@ const Create = (props: any) => {
                 label="Password"
                 type="password"
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => handleChangePassword(event.target.value)}
               />
             </div>
           </Box>
@@ -198,7 +212,7 @@ const Create = (props: any) => {
                 label="Password（確認）"
                 type="password"
                 value={confirm}
-                onChange={(event) => setConfirm(event.target.value)}
+                onChange={(event) => handleChangeConfirm(event.target.value)}
               />
             </div>
           </Box>
@@ -220,7 +234,11 @@ const Create = (props: any) => {
               padding: 1,
             }}
           >
-            <Button variant="contained" onClick={() => createUserHandle()}>
+            <Button
+              variant="contained"
+              disabled={buttonAble}
+              onClick={() => createUserHandle()}
+            >
               登録
             </Button>
           </Box>
