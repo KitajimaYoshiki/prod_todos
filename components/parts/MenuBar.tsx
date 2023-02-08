@@ -103,7 +103,7 @@ const PersistentDrawerLeft = (props: any) => {
       return null
     })
     // error
-    if (tasks == -1) {
+    if (tasks == -1 || tasks == 500) {
       alert('データベースに接続できませんでした。')
       return
     }
@@ -120,7 +120,7 @@ const PersistentDrawerLeft = (props: any) => {
         return []
       })
       // error
-      if (tags == -1 || items == -1) {
+      if (tags == -1 || tags == 500 || items == -1 || items == 500) {
         alert('データベースに接続できませんでした。')
         return
       }

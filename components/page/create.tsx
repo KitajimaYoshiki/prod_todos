@@ -106,7 +106,7 @@ const Create = (props: any) => {
     }
     const resultCode = await createUser(userInfo)
     // 作成チェック
-    if (resultCode == 400) {
+    if (resultCode == 409) {
       alert('このIDはすでに利用されています。')
       changeTrue()
     } else if (resultCode == 201) {
@@ -143,7 +143,7 @@ const Create = (props: any) => {
 
   return (
     <div>
-      <LoginBar text={'アカウント登録'} />
+      <LoginBar text={'アカウント新規登録'} />
       <Box
         sx={{
           margin: 10,
