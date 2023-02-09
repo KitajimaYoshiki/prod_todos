@@ -1,4 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
+import { resultItems } from 'components/dto/resultItems'
+import { resultTags } from 'components/dto/resultTags'
+import { resultTasks } from 'components/dto/resultTasks'
 import { user } from 'components/dto/user'
 
 // APIのURL
@@ -19,68 +22,109 @@ const apiClient: AxiosInstance = axios.create({
 export const loadTodoList = async (
   user_id: string,
   show_completed: boolean
-) => {
+): Promise<resultTasks> => {
   try {
     // POST /api/tasks/all
-    const task = await apiClient
+    const result = await apiClient
       .post('/all', {
         user_id: user_id,
         show_completed: show_completed,
       })
-      .then((resp) => resp.data)
-    return task
+      .then((resp) => resp)
+    const returnTask: resultTasks = {
+      tasks: result.data,
+      status: result.request.status,
+    }
+    return returnTask
   } catch (e) {
     if (axios.isAxiosError(e) && e.response && e.response.status) {
-      return e.response.status
+      const returnTask: resultTasks = {
+        tasks: [],
+        status: e.response.status,
+      }
+      return returnTask
     } else {
-      return -1
+      const returnTask: resultTasks = {
+        tasks: [],
+        status: -1,
+      }
+      return returnTask
     }
   }
 }
 
 // タグ取得
-export const loadTags = async (task_id: number) => {
+export const loadTags = async (task_id: number): Promise<resultTags> => {
   try {
     // POST /api/tasks/get_tags
-    const tags = await apiClient
+    const result = await apiClient
       .post('/get_tags', {
         task_id: task_id,
       })
-      .then((resp) => resp.data)
+      .then((resp) => resp)
 
-    return tags
+    const returnTags: resultTags = {
+      tags: result.data,
+      status: result.request.status,
+    }
+
+    return returnTags
   } catch (e) {
     if (axios.isAxiosError(e) && e.response && e.response.status) {
-      return e.response.status
+      const returnTags: resultTags = {
+        tags: [],
+        status: e.response.status,
+      }
+      return returnTags
     } else {
-      return -1
+      const returnTags: resultTags = {
+        tags: [],
+        status: -1,
+      }
+      return returnTags
     }
   }
 }
 
 // チェックリスト取得
-export const loadItems = async (task_id: number, show_completed: boolean) => {
+export const loadItems = async (
+  task_id: number,
+  show_completed: boolean
+): Promise<resultItems> => {
   try {
     // POST /api/tasks/get_tags
-    const items = await apiClient
+    const result = await apiClient
       .post('/get_check', {
         task_id: task_id,
         show_completed: show_completed,
       })
-      .then((resp) => resp.data)
+      .then((resp) => resp)
 
-    return items
+    const returnItems: resultItems = {
+      items: result.data,
+      status: result.request.status,
+    }
+
+    return returnItems
   } catch (e) {
     if (axios.isAxiosError(e) && e.response && e.response.status) {
-      return e.response.status
+      const returnItems: resultItems = {
+        items: [],
+        status: e.response.status,
+      }
+      return returnItems
     } else {
-      return -1
+      const returnItems: resultItems = {
+        items: [],
+        status: -1,
+      }
+      return returnItems
     }
   }
 }
 
 // ログイン認証
-export const login = async (user: user) => {
+export const login = async (user: user): Promise<number> => {
   try {
     const result = await apiClient
       .post('/login', {
@@ -92,12 +136,14 @@ export const login = async (user: user) => {
   } catch (e) {
     if (axios.isAxiosError(e) && e.response) {
       return e.response.status
+    } else {
+      return -1
     }
   }
 }
 
 // アカウント作成
-export const createUser = async (user: user) => {
+export const createUser = async (user: user): Promise<number> => {
   try {
     const result = await apiClient
       .post('/create_user', {
@@ -109,6 +155,8 @@ export const createUser = async (user: user) => {
   } catch (e) {
     if (axios.isAxiosError(e) && e.response) {
       return e.response.status
+    } else {
+      return -1
     }
   }
 }

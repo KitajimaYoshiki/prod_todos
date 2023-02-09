@@ -20,9 +20,7 @@ const Login = (props: any) => {
   const [id, setId] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [idError, setIdError] = useState(false)
-  const [idRequired, setIdRequired] = useState(true)
   const [passError, setPassError] = useState(false)
-  const [passRequired, setPassRequired] = useState(true)
   const [showPassword, setShowPassword] = React.useState(false)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
@@ -122,7 +120,7 @@ const Login = (props: any) => {
           >
             <div>
               <TextField
-                required={idRequired}
+                required={true}
                 inputProps={{ maxLength: 25 }}
                 error={idError}
                 id="outlined-required"
@@ -144,7 +142,7 @@ const Login = (props: any) => {
           >
             <div>
               <TextField
-                required={passRequired}
+                required={true}
                 error={passError}
                 inputProps={{ maxLength: 16 }}
                 id="outlined-password-input"

@@ -20,6 +20,11 @@ import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { loadItems, loadTags, loadTodoList } from 'components/api/todoItemDao'
+import { checkList } from 'components/dto/checkList'
+import { resultItems } from 'components/dto/resultItems'
+import { resultTags } from 'components/dto/resultTags'
+import { resultTasks } from 'components/dto/resultTasks'
+import { tag } from 'components/dto/tag'
 import { TodoList } from 'components/dto/TodoList'
 import { useEffect, useState } from 'react'
 
@@ -98,32 +103,56 @@ const PersistentDrawerLeft = (props: any) => {
   const [todoList, setTodoList] = useState<TodoList[]>([])
   const updateTodoList = async () => {
     // Task
-    const tasks = await loadTodoList(props.userId, true).catch((e) => {
-      console.log(`loadTodoList() failed - ${e}`)
-      return null
-    })
+    const tasks: resultTasks = await loadTodoList(props.userId, true).catch(
+      (e) => {
+        console.log(`loadTodoList() failed - ${e}`)
+        const result: resultTasks = {
+          tasks: [],
+          status: -2,
+        }
+        return result
+      }
+    )
+    if (tasks.status == -2) return
     // error
-    if (tasks == -1 || tasks == 500) {
+    if (tasks.status == -1 || tasks.status == 500) {
       alert('データベースに接続できませんでした。')
       return
     }
     const taskList: TodoList[] = []
-    for (const task of tasks) {
+    for (const task of tasks.tasks) {
       // Tag
-      const tags = await loadTags(task.id).catch((e) => {
+      const showTags: resultTags = await loadTags(task.id).catch((e) => {
         console.log(`loadTags() failed - ${e}`)
-        return []
+        const result: resultTags = {
+          tags: [],
+          status: -2,
+        }
+        return result
       })
       // item
-      const items = await loadItems(task.id, true).catch((e) => {
-        console.log(`loadItems() failed - ${e}`)
-        return []
-      })
+      const showItems: resultItems = await loadItems(task.id, true).catch(
+        (e) => {
+          console.log(`loadItems() failed - ${e}`)
+          const result: resultItems = {
+            items: [],
+            status: -2,
+          }
+          return result
+        }
+      )
       // error
-      if (tags == -1 || tags == 500 || items == -1 || items == 500) {
+      if (
+        showTags.status == -1 ||
+        showTags.status == 500 ||
+        showItems.status == -1 ||
+        showItems.status == 500
+      ) {
         alert('データベースに接続できませんでした。')
         return
       }
+      const tags: tag[] = showTags.tags
+      const items: checkList[] = showItems.items
       taskList.push({ ...task, tags, items })
     }
     setTodoList(taskList)

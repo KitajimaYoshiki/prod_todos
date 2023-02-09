@@ -10,11 +10,8 @@ const Create = (props: any) => {
   const [password, setPassword] = useState<string>('')
   const [confirm, setConfirm] = useState<string>('')
   const [idError, setIdError] = useState(false)
-  const [idRequired, setIdRequired] = useState(true)
   const [passError, setPassError] = useState(false)
-  const [passRequired, setPassRequired] = useState(true)
   const [confirmError, setConfirmError] = useState(false)
-  const [confirmRequired, setConfirmRequired] = useState(true)
   const [buttonAble, setButtonAble] = useState(true)
 
   // 画面遷移
@@ -160,7 +157,7 @@ const Create = (props: any) => {
           >
             <div>
               <TextField
-                required={idRequired}
+                required={true}
                 error={idError}
                 inputProps={{ maxLength: 25 }}
                 id="outlined-required"
@@ -182,7 +179,7 @@ const Create = (props: any) => {
           >
             <div>
               <TextField
-                required={passRequired}
+                required={true}
                 error={passError}
                 inputProps={{ maxLength: 16 }}
                 id="outlined-password-input"
@@ -205,7 +202,7 @@ const Create = (props: any) => {
           >
             <div>
               <TextField
-                required={confirmRequired}
+                required={true}
                 error={confirmError}
                 inputProps={{ maxLength: 16 }}
                 id="outlined-password-reinput"
