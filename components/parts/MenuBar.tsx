@@ -116,7 +116,7 @@ const PersistentDrawerLeft = (props: any) => {
     if (tasks.status == -2) return
     // error
     if (tasks.status == -1 || tasks.status == 500) {
-      alert('データベースに接続できませんでした。')
+      alert('データベースに接続できませんでした')
       return
     }
     const taskList: TodoList[] = []
@@ -148,7 +148,7 @@ const PersistentDrawerLeft = (props: any) => {
         showItems.status == -1 ||
         showItems.status == 500
       ) {
-        alert('データベースに接続できませんでした。')
+        alert('データベースに接続できませんでした')
         return
       }
       const tags: tag[] = showTags.tags
