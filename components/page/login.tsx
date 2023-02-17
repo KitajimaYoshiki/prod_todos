@@ -52,7 +52,7 @@ const Login = (props: any) => {
   // 入力値チェック
   const checkValue = (): boolean => {
     if (!id || !password) {
-      alert('ID、Passwordを入力してください。')
+      alert('ID、Passwordを入力してください')
       if (!id) {
         setIdError(true)
       } else {
@@ -86,7 +86,7 @@ const Login = (props: any) => {
     const resultCode = await login(userInfo)
     // 認証チェック
     if (resultCode == 401 || resultCode == 400) {
-      alert('IdまたはPassが正しくありません')
+      alert('IDまたはPasswordが正しくありません')
       changeTrue()
     } else if (resultCode == 200) {
       // 画面遷移
@@ -94,7 +94,7 @@ const Login = (props: any) => {
       handle('view')
       props.setUserId(id)
     } else {
-      alert('データベースに接続できませんでした。')
+      alert('データベースに接続できませんでした')
       changeTrue()
     }
 

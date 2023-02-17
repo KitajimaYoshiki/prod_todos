@@ -39,7 +39,7 @@ const Create = (props: any) => {
   const checkValue = (): boolean => {
     // Nullチェック
     if (!id || !password || !confirm) {
-      alert('ID、Passwordを入力してください。')
+      alert('IDを入力してください')
       if (!id) {
         setIdError(true)
       } else {
@@ -104,14 +104,14 @@ const Create = (props: any) => {
     const resultCode = await createUser(userInfo)
     // 作成チェック
     if (resultCode == 409) {
-      alert('このIDはすでに利用されています。')
+      alert('このIDは既に利用されています。')
       changeTrue()
     } else if (resultCode == 201) {
       alert('登録成功')
       // 画面遷移
       handle('')
     } else {
-      alert('データベースに接続できませんでした。')
+      alert('データベースに接続できませんでした')
       changeTrue()
     }
 
