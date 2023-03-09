@@ -1,4 +1,12 @@
+import { responsiveFontSizes } from '@mui/material'
 import axios, { AxiosInstance } from 'axios'
+import { changeStatusCheckListDto } from 'components/dto/changeStatusCheckListDto'
+import { createItemDto } from 'components/dto/createItemDto'
+import { createTagDto } from 'components/dto/createTagDto'
+import { createTaskDto } from 'components/dto/createTaskDto'
+import { resultCreateItemDto } from 'components/dto/resultCreateItemDto'
+import { resultCreateTagDto } from 'components/dto/resultCreateTagDto'
+import { resultCreateTaskDto } from 'components/dto/resultCreateTaskDto'
 import { resultItems } from 'components/dto/resultItems'
 import { resultTags } from 'components/dto/resultTags'
 import { resultTasks } from 'components/dto/resultTasks'
@@ -148,6 +156,151 @@ export const createUser = async (user: user): Promise<number> => {
     const result = await apiClient
       .post('/create_user', {
         user: user,
+      })
+      .then((resp) => resp.status)
+
+    return result
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    } else {
+      return -1
+    }
+  }
+}
+
+// タスク作成
+export const createTask = async (
+  user_id: string,
+  task: createTaskDto
+): Promise<resultCreateTaskDto> => {
+  try {
+    const result = await apiClient
+      .post('/add_task', {
+        user_id: user_id,
+        task: task,
+      })
+      .then((resp) => resp)
+
+    const resultTask: resultCreateTaskDto = {
+      task: result.data,
+      status: result.status,
+    }
+
+    return resultTask
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      const resultTask: resultCreateTaskDto = {
+        task: undefined,
+        status: e.response.status,
+      }
+      return resultTask
+    } else {
+      const resultTask: resultCreateTaskDto = {
+        task: undefined,
+        status: -1,
+      }
+      return resultTask
+    }
+  }
+}
+
+// タグ作成
+export const createTag = async (
+  createTag: createTagDto
+): Promise<resultCreateTagDto> => {
+  try {
+    const result = await apiClient
+      .post('/add_tag', {
+        tag: createTag,
+      })
+      .then((resp) => resp)
+
+    const resultTag: resultCreateTagDto = {
+      tag: result.data,
+      status: result.status,
+    }
+
+    return resultTag
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      const resultTag: resultCreateTagDto = {
+        tag: undefined,
+        status: e.response.status,
+      }
+      return resultTag
+    } else {
+      const resultTag: resultCreateTagDto = {
+        tag: undefined,
+        status: -1,
+      }
+      return resultTag
+    }
+  }
+}
+
+// アイテム作成
+export const createItem = async (
+  createItem: createItemDto
+): Promise<resultCreateItemDto> => {
+  try {
+    const result = await apiClient
+      .post('/add_check', {
+        item: createItem,
+      })
+      .then((resp) => resp)
+    const resultItem: resultCreateItemDto = {
+      item: result.data,
+      status: result.status,
+    }
+    return resultItem
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      const resultItem: resultCreateItemDto = {
+        item: undefined,
+        status: e.response.status,
+      }
+      return resultItem
+    } else {
+      const resultItem: resultCreateItemDto = {
+        item: undefined,
+        status: -1,
+      }
+      return resultItem
+    }
+  }
+}
+
+// タスク完了
+export const changeStatusTask = async (taskId: number): Promise<number> => {
+  try {
+    const result = await apiClient
+      .put('/task', {
+        task_id: taskId,
+        status: true,
+      })
+      .then((resp) => resp.status)
+
+    return result
+  } catch (e) {
+    if (axios.isAxiosError(e) && e.response) {
+      return e.response.status
+    } else {
+      return -1
+    }
+  }
+}
+
+// チェックリスト完了
+export const changeStatusCheckList = async (
+  changeStatusItem: changeStatusCheckListDto,
+  itemStatus: boolean
+): Promise<number> => {
+  try {
+    const result = await apiClient
+      .put('/check', {
+        item_info: changeStatusItem,
+        status: itemStatus,
       })
       .then((resp) => resp.status)
 

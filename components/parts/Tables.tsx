@@ -8,24 +8,20 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { Data } from 'components/api/Data'
 import { Order } from 'components/api/Order'
+import { changeStatusCheckList } from 'components/api/todoItemDao'
+import { changeStatusCheckListDto } from 'components/dto/changeStatusCheckListDto'
+import { checkboxStatusDto } from 'components/dto/checkboxStatusDto'
 import { TodoList } from 'components/dto/TodoList'
 import * as React from 'react'
 
 import DateFormat from '../api/date'
 import EnhancedTableHead from './EnhancedTableHead'
 
-export type ItemListProps = {
-  todoList: TodoList[]
-}
-
-export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
+export const EnhancedTable = (props: any) => {
   const [order, setOrder] = React.useState<Order>('asc')
   const [orderBy, setOrderBy] = React.useState<keyof Data>('deadline')
   const [selected, setSelected] = React.useState<readonly string[]>([])
   const [dense, setDense] = React.useState(false)
-
-  // const todoList = getRows.filter((v) => !!v)
-  console.log(todoList)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -38,33 +34,56 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = todoList.map((n) => n.title)
+      const newSelected = props.todoList.map((n: TodoList) => n.title)
       setSelected(newSelected)
       return
     }
     setSelected([])
   }
 
-  const handleClick = (event: React.MouseEvent<unknown>, title: string) => {
-    const selectedIndex = selected.indexOf(title)
-    let newSelected: readonly string[] = []
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, title)
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      )
+  // チェックボックスの状態管理リスト
+  const checkboxStatusArray: Array<checkboxStatusDto> = []
+  props.todoList.forEach((item: TodoList) => {
+    const newElement: checkboxStatusDto = {
+      id: item.id.toString(),
+      status: false,
     }
+    checkboxStatusArray.push(newElement)
+  })
 
-    setSelected(newSelected)
+  // チェックボックスクリック時の状態変更
+  const onClickCheckStatue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    for (let index = 0; index < checkboxStatusArray.length; index++) {
+      if (checkboxStatusArray[index].id == event.target.id) {
+        const newValue: checkboxStatusDto = {
+          id: checkboxStatusArray[index].id,
+          status: event.target.checked,
+        }
+        checkboxStatusArray.splice(index, 1, newValue)
+      }
+    }
+    props.setCheckboxStatusArray(checkboxStatusArray)
   }
-  const isSelected = (title: string) => selected.indexOf(title) !== -1
+
+  // チェックリストの状態変更（API）
+  const changeCheckListStatus = async (
+    taskId: number,
+    itemId: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const itemInfo: changeStatusCheckListDto = {
+      task_id: taskId,
+      item_id: itemId,
+    }
+    const changeResult: number = await changeStatusCheckList(
+      itemInfo,
+      event.target.checked
+    )
+    if (changeResult == 500 || changeResult == -1) {
+      alert('データベースに接続できませんでした')
+      return
+    }
+  }
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -81,31 +100,31 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={todoList.length}
+              rowCount={props.todoList.length}
             />
             <TableBody>
-              {todoList.map((row, index) => {
-                const isItemSelected = isSelected(row.title)
+              {props.todoList.map((row: TodoList, index: number) => {
                 const labelId = `enhanced-table-checkbox-${index}`
 
                 return (
-                  <TableRow
-                    hover
-                    onClick={(event) => handleClick(event, row.title)}
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                  >
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
+                      {row.done === false ? (
+                        <Checkbox
+                          color="primary"
+                          id={`${row.id}`}
+                          defaultChecked={row.done}
+                          onChange={(event) => onClickCheckStatue(event)}
+                        />
+                      ) : (
+                        <Checkbox
+                          color="primary"
+                          disabled
+                          id={`${row.id}`}
+                          defaultChecked={row.done}
+                          onChange={(event) => onClickCheckStatue(event)}
+                        />
+                      )}
                     </TableCell>
                     <TableCell
                       component="th"
@@ -123,7 +142,13 @@ export const EnhancedTable: React.FC<ItemListProps> = ({ todoList }) => {
                         row.items.map((item) => {
                           return (
                             <div key={item.id}>
-                              <Checkbox color="primary" />
+                              <Checkbox
+                                color="primary"
+                                defaultChecked={item.done}
+                                onChange={(event) =>
+                                  changeCheckListStatus(row.id, item.id, event)
+                                }
+                              />
                               <span>{item.name}</span>
                             </div>
                           )
