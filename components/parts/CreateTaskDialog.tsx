@@ -166,11 +166,11 @@ const CreateTaskDialog = (props: any) => {
     setInputItemText('')
   }
 
-  const inputStartRef = useRef(null)
+  const inputStartRef = useRef<HTMLInputElement>(null)
   function handleStartClick() {
     inputStartRef.current?.showPicker()
   }
-  const inputDeadlineRef = useRef(null)
+  const inputDeadlineRef = useRef<HTMLInputElement>(null)
   function handleDeadlineClick() {
     inputDeadlineRef.current?.showPicker()
   }
