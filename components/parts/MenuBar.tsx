@@ -19,7 +19,13 @@ import ListItemText from '@mui/material/ListItemText'
 import { styled, useTheme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import { loadItems, loadTags, loadTodoList } from 'components/api/todoItemDao'
+import {
+  changeStatusTask,
+  loadItems,
+  loadTags,
+  loadTodoList,
+} from 'components/api/todoItemDao'
+import { checkboxStatusDto } from 'components/dto/checkboxStatusDto'
 import { checkList } from 'components/dto/checkList'
 import { resultItems } from 'components/dto/resultItems'
 import { resultTags } from 'components/dto/resultTags'
@@ -28,6 +34,7 @@ import { tag } from 'components/dto/tag'
 import { TodoList } from 'components/dto/TodoList'
 import { useEffect, useState } from 'react'
 
+import CreateTaskDialog from './CreateTaskDialog'
 import SelectBox from './SelectBox'
 import Tables from './Tables'
 
@@ -85,6 +92,10 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 const PersistentDrawerLeft = (props: any) => {
   const theme = useTheme()
   const [open, setOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [checkboxStatusArray, setCheckboxStatusArray] = useState<
+    checkboxStatusDto[]
+  >([])
 
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -94,12 +105,42 @@ const PersistentDrawerLeft = (props: any) => {
     setOpen(false)
   }
 
+  const handleClickDialogOpen = () => {
+    setDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setDialogOpen(false)
+  }
+
   const handleMenu = (index: number, name: string) => {
     if (index === 0) {
       props.setMenu(name)
     }
   }
 
+  // タスク完了ボタン押下時
+  const onClickTaskStatus = async () => {
+    const alertStatus: boolean = confirm('選択したタスクを完了しますか？')
+    if (!alertStatus) {
+      return
+    }
+
+    // タスク完了処理
+    for (let index = 0; index < checkboxStatusArray.length; index++) {
+      if (checkboxStatusArray[index].status) {
+        const resultChangeTask: number = await changeStatusTask(
+          parseInt(checkboxStatusArray[index].id)
+        )
+        if (resultChangeTask == 500 || resultChangeTask == -1) {
+          alert('データベースに接続できませんでした')
+          return
+        }
+      }
+    }
+  }
+
+  // タスク取得
   const [todoList, setTodoList] = useState<TodoList[]>([])
   const updateTodoList = async () => {
     // Task
@@ -247,13 +288,28 @@ const PersistentDrawerLeft = (props: any) => {
               }}
             >
               {/* <LoadingButtons time={1000} /> */}
-              <Button variant="contained">タスクを追加</Button>
+              <Button variant="contained" onClick={handleClickDialogOpen}>
+                タスクを追加
+              </Button>
               <SelectBox></SelectBox>
+              <CreateTaskDialog
+                dialogOpen={dialogOpen}
+                setDialogOpen={setDialogOpen}
+                userId={props.userId}
+                todoList={todoList}
+              />
             </Box>
-            <Tables todoList={todoList} />
+            <Tables
+              todoList={todoList}
+              setCheckboxStatusArray={setCheckboxStatusArray}
+            />
             <Box>
               <Grid container alignItems="right" justifyContent="right">
-                <Button variant="contained" size="large">
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={onClickTaskStatus}
+                >
                   タスク完了
                 </Button>
               </Grid>
